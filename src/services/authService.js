@@ -1,14 +1,8 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import { app, db } from "../firebase/firebaseConfig";
-import { GoogleSignin } from '@react-native-google-signin/google-signin'; // Importe a biblioteca de autenticação do Google
 
 const auth = getAuth(app);
-
-// Configuração do Google Sign-In
-GoogleSignin.configure({
-  webClientId: '203238658170-n9oi918ljt99064cgvp7g2feqj9a7h92.apps.googleusercontent.com', // Substitua pelo seu Web Client ID do Firebase
-});
 
 // Criar usuário e salvar no Firestore
 export const registerWithEmail = async (email, password) => {
@@ -52,15 +46,8 @@ export const loginWithEmail = async (email, password) => {
 // Login com Google e salvar usuário no Firestore se for novo
 export const loginWithGoogle = async () => {
   try {
-    // Verifica se o Google Sign-In está configurado corretamente
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-
-    // Realiza o login com o Google
-    const { idToken } = await GoogleSignin.signIn();
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-    // Autentica no Firebase com as credenciais do Google
-    const userCredential = await auth.signInWithCredential(googleCredential);
+    const provider = new GoogleAuthProvider(); // Cria o provedor do Google
+    const userCredential = await signInWithPopup(auth, provider); // Abre o popup de login
     const user = userCredential.user;
 
     // Verifica se o usuário já existe no Firestore
