@@ -1,28 +1,31 @@
 import React, { createContext, useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { loginWithEmail, loginWithGoogle, registerWithEmail } from "../services/authService"; // Importe os métodos do authService
-import { auth } from "../firebase/firebaseConfig"; // Importe a configuração do Firebase
+import { 
+  loginWithEmail, 
+  loginWithGoogle, 
+  registerWithEmail, 
+  updatePassword, 
+  deleteAccount 
+} from "../services/authService";
+import { auth } from "../firebase/firebaseConfig";
 
-// Cria o contexto
 export const UserContext = createContext();
 
-// Provedor do contexto
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Estado para armazenar o usuário logado
-  const [loading, setLoading] = useState(true); // Estado para controlar o carregamento inicial
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Verifica o estado de autenticação ao carregar o componente
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
-        setUser(firebaseUser); // Atualiza o estado do usuário
+        setUser(firebaseUser);
       } else {
-        setUser(null); // Limpa o estado do usuário
+        setUser(null);
       }
-      setLoading(false); // Finaliza o carregamento
+      setLoading(false);
     });
 
-    return () => unsubscribe(); // Limpa o listener ao desmontar o componente
+    return () => unsubscribe();
   }, []);
 
   // Função para login com e-mail e senha
@@ -65,6 +68,26 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  // Função para alterar senha
+  const changePassword = async (newPassword) => {
+    try {
+      await updatePassword(newPassword);
+      setUser(null); // Limpa o estado do usuário após alterar a senha
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // Função para excluir conta
+  const removeAccount = async (password) => {
+    try {
+      await deleteAccount(password);
+      setUser(null); // Limpa o estado do usuário após excluir a conta
+    } catch (error) {
+      throw error;
+    }
+  };
+
   // Valores disponíveis no contexto
   const contextValue = {
     user,
@@ -73,6 +96,8 @@ export const UserProvider = ({ children }) => {
     register,
     googleLogin,
     logout,
+    changePassword,
+    removeAccount,
   };
 
   return (

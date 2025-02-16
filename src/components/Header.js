@@ -1,13 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native'; // Importe o useNavigation
+import { useNavigation } from '@react-navigation/native';
+import { UserContext } from '../contexts/UserContext';
 
-const Header = ({ onMenuPress, onSearchPress, onLoginPress }) => {
-  const navigation = useNavigation(); // Hook para navegação
+const Header = ({ onMenuPress, onSearchPress }) => {
+  const navigation = useNavigation();
+  const { user } = useContext(UserContext); // Acesse o estado do usuário
 
   const handleLogoPress = () => {
-    navigation.navigate('Home'); // Navega para a tela inicial
+    navigation.navigate('Home');
+  };
+
+  const handleProfilePress = () => {
+    if (user) {
+      // Redireciona para a tela de perfil
+      navigation.navigate('Profile');
+    } else {
+      // Redireciona para a tela de login
+      navigation.navigate('Login');
+    }
   };
 
   return (
@@ -24,15 +36,25 @@ const Header = ({ onMenuPress, onSearchPress, onLoginPress }) => {
         </View>
       </TouchableOpacity>
 
-
-      {/* Ícones de busca e login (alinhados à direita) */}
+      {/* Ícones de busca e perfil (alinhados à direita) */}
       <View style={styles.rightContainer}>
         <TouchableOpacity onPress={onSearchPress}>
           <Ionicons name="search" size={30} color="white" style={styles.icon} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={onLoginPress}>
-          <Ionicons name="person" size={30} color="white" style={styles.icon} />
-        </TouchableOpacity>
+
+        {/* Mensagem de boas-vindas e ícone de perfil */}
+        {user ? (
+          <View style={styles.userContainer}>
+            <Text style={styles.welcomeText}>Bem-vindo, {user.email}!</Text>
+            <TouchableOpacity onPress={handleProfilePress}>
+              <Ionicons name="person" size={30} color="white" style={styles.icon} />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity onPress={handleProfilePress}>
+            <Ionicons name="person" size={30} color="white" style={styles.icon} />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -43,28 +65,37 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#111', // Cor de fundo escura
+    backgroundColor: '#111',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    elevation: 5, // Sombra para dar profundidade
+    elevation: 5,
   },
   centerContainer: {
-    alignItems: 'center', 
+    alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 10, // Evita que o flex: 1 cause problemas
+    paddingHorizontal: 10,
   },
   rightContainer: {
-    flexDirection: 'row', // Alinha os ícones horizontalmente
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  userContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
   title: {
     color: 'white',
     fontSize: 24,
     fontWeight: 'bold',
-    letterSpacing: 1.5,  // Espaço entre as letras para dar um efeito elegante
+    letterSpacing: 1.5,
+  },
+  welcomeText: {
+    color: 'white',
+    fontSize: 14,
+    marginRight: 10,
   },
   icon: {
-    marginHorizontal: 10, // Espaçamento entre os ícones
+    marginHorizontal: 10,
   },
 });
 

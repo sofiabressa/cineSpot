@@ -6,13 +6,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from '../screens/HomeScreen';
 import MovieDetailsScreen from '../screens/MovieDetailsScreen';
 import SearchScreen from '../screens/SearchScreen';
-import LoginScreen from '../screens/LoginScreen'; // Importação correta do LoginScreen
+import LoginScreen from '../screens/LoginScreen';
 
 // Importando o LayoutComum
 import LayoutComum from '../components/LayoutComum';
 
 // Importando o UserContext
-import { UserContext } from '../contexts/UserContext'; // Substitua o AuthProvider pelo UserContext
+import { UserContext } from '../contexts/UserContext';
 
 const Stack = createStackNavigator();
 
