@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { View, FlatList, Text, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
 import { getPopularMovies } from '../services/movieService';
 import MovieCard from '../components/MovieCard';
-import LayoutComum from '../components/LayoutComum'; // Importe o LayoutComum
+import LayoutComum from '../components/LayoutComum';
 
 const HomeScreen = ({ navigation }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  const { width } = Dimensions.get('window'); // Pegando a largura da tela
-  const numColumns = width > 768 ? 4 : width > 500 ? 3 : 2; // Adaptação para celular e desktop
+  const { width } = Dimensions.get('window');
+  const numColumns = width > 768 ? 4 : width > 500 ? 3 : 2;
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -32,19 +32,19 @@ const HomeScreen = ({ navigation }) => {
   }
 
   return (
-    <LayoutComum> {/* Envolva o conteúdo com LayoutComum */}
+    <LayoutComum>
       <View style={styles.container}>
         <Text style={styles.title}>Filmes Populares</Text>
         <FlatList
           data={movies}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderMovie}
-          numColumns={numColumns} // Definindo o número de colunas com base no tamanho da tela
-          contentContainerStyle={styles.listContent}
+          numColumns={numColumns}
+          contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 10 }}
         />
       </View>
     </LayoutComum>
-  );
+  );  
 };
 
 const styles = StyleSheet.create({

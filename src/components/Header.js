@@ -1,8 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'; // Importe o useNavigation
 
 const Header = ({ onMenuPress, onSearchPress, onLoginPress }) => {
+  const navigation = useNavigation(); // Hook para navegação
+
+  const handleLogoPress = () => {
+    navigation.navigate('Home'); // Navega para a tela inicial
+  };
+
   return (
     <View style={styles.headerContainer}>
       {/* Ícone de menu (opcional) */}
@@ -10,10 +17,13 @@ const Header = ({ onMenuPress, onSearchPress, onLoginPress }) => {
         <Ionicons name="menu" size={30} color="white" style={styles.icon} />
       </TouchableOpacity>
 
-      {/* Nome CineSpot (centralizado) */}
-      <View style={styles.centerContainer}>
-        <Text style={styles.title}>CineSpot</Text>
-      </View>
+      {/* Nome CineSpot (clicável) */}
+      <TouchableOpacity onPress={handleLogoPress}>
+        <View style={styles.centerContainer}>
+          <Text style={styles.title}>CineSpot</Text>
+        </View>
+      </TouchableOpacity>
+
 
       {/* Ícones de busca e login (alinhados à direita) */}
       <View style={styles.rightContainer}>
@@ -39,8 +49,9 @@ const styles = StyleSheet.create({
     elevation: 5, // Sombra para dar profundidade
   },
   centerContainer: {
-    flex: 1, // Ocupa o espaço restante para centralizar o título
-    alignItems: 'center', // Centraliza o texto
+    alignItems: 'center', 
+    justifyContent: 'center',
+    paddingHorizontal: 10, // Evita que o flex: 1 cause problemas
   },
   rightContainer: {
     flexDirection: 'row', // Alinha os ícones horizontalmente

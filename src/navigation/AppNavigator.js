@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -6,61 +6,53 @@ import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from '../screens/HomeScreen';
 import MovieDetailsScreen from '../screens/MovieDetailsScreen';
 import SearchScreen from '../screens/SearchScreen';
-import { LoginScreen, RegisterScreen } from '../screens/LoginScreen'; // Importe as telas de login e registro
+import LoginScreen from '../screens/LoginScreen'; // Importação correta do LoginScreen
 
 // Importando o LayoutComum
 import LayoutComum from '../components/LayoutComum';
 
+// Importando o UserContext
+import { UserContext } from '../contexts/UserContext'; // Substitua o AuthProvider pelo UserContext
+
 const Stack = createStackNavigator();
 
+// Componente para envolver telas com LayoutComum
+const ScreenWithLayout = (Component) => (props) => (
+  <LayoutComum>
+    <Component {...props} />
+  </LayoutComum>
+);
+
 const AppNavigator = () => {
+  const { user, loading } = useContext(UserContext); // Use o UserContext para verificar o estado de autenticação
+
+  if (loading) {
+    return null; // Ou um componente de carregamento (ex: <ActivityIndicator />)
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName={user ? "Home" : "Login"} // Define a tela inicial com base no estado de autenticação
         screenOptions={{
           headerShown: false, // Oculta o cabeçalho padrão do React Navigation
         }}
       >
         <Stack.Screen 
           name="Home" 
-          component={() => (
-            <LayoutComum>
-              <HomeScreen />
-            </LayoutComum>
-          )}
+          component={ScreenWithLayout(HomeScreen)} // Envolve HomeScreen com LayoutComum
         />
         <Stack.Screen 
           name="MovieDetails" 
-          component={() => (
-            <LayoutComum>
-              <MovieDetailsScreen />
-            </LayoutComum>
-          )}
+          component={ScreenWithLayout(MovieDetailsScreen)} // Envolve MovieDetailsScreen com LayoutComum
         />
         <Stack.Screen 
           name="Search" 
-          component={() => (
-            <LayoutComum>
-              <SearchScreen />
-            </LayoutComum>
-          )}
+          component={ScreenWithLayout(SearchScreen)} // Envolve SearchScreen com LayoutComum
         />
         <Stack.Screen 
           name="Login" 
-          component={() => (
-            <LayoutComum>
-              <LoginScreen />
-            </LayoutComum>
-          )}
-        />
-        <Stack.Screen 
-          name="Register" 
-          component={() => (
-            <LayoutComum>
-              <RegisterScreen />
-            </LayoutComum>
-          )}
+          component={ScreenWithLayout(LoginScreen)} // Envolve LoginScreen com LayoutComum
         />
       </Stack.Navigator>
     </NavigationContainer>

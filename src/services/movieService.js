@@ -36,9 +36,8 @@ export const getMovieStreaming = async (movieId) => {
 // Buscar certificações de um filme (classificação indicativa)
 export const getMovieCertifications = async (movieId) => {
   try {
-    const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/release_dates?api_key=YOUR_API_KEY`);
-    const data = await response.json();
-    return data.results; // Retorna os dados de certificação
+    const response = await api.get(`/movie/${movieId}/release_dates`);
+    return response.data.results; // Retorna os dados de certificação
   } catch (error) {
     console.error('Erro ao obter certificações:', error);
     throw error;
@@ -48,9 +47,8 @@ export const getMovieCertifications = async (movieId) => {
 // Buscar elenco de um filme
 export const getMovieCast = async (movieId) => {
   try {
-    const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=e48a5e480776d901780d6e233fc3926f`);
-    const data = await response.json();
-    return data.cast; 
+    const response = await api.get(`/movie/${movieId}/credits`);
+    return response.data.cast; 
   } catch (error) {
     console.error('Erro ao obter elenco:', error);
     throw error;

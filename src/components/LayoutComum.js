@@ -1,37 +1,19 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import Header from './Header'; // Importe o Header
-import { useNavigation } from '@react-navigation/native'; // Adicione o useNavigation
+import Header from './Header';
+import { useNavigation } from '@react-navigation/native';
 
 const LayoutComum = ({ children }) => {
-  const navigation = useNavigation(); // Hook para navegação
-
-  const handleMenuPress = () => {
-    // Lógica para abrir o menu (se necessário)
-    console.log('Menu pressionado');
-  };
-
-  const handleSearchPress = () => {
-    // Lógica para abrir a pesquisa
-    console.log('Pesquisa pressionada');
-  };
-
-  const handleLoginPress = () => {
-    // Navegar para a tela de login
-    navigation.navigate('Login');
-  };
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
-      {/* Usando o Header com a função de login */}
       <Header
-        onMenuPress={handleMenuPress}
-        onSearchPress={handleSearchPress}
-        onLoginPress={handleLoginPress}
+        onMenuPress={() => console.log('Menu pressionado')}
+        onSearchPress={() => console.log('Pesquisa pressionada')}
+        onLoginPress={() => navigation.navigate('Login')}
       />
-      <View style={styles.content}>
-        {children}  {/* O conteúdo da tela será renderizado aqui */}
-      </View>
+      <View style={styles.content}>{children}</View>
     </View>
   );
 };
@@ -39,10 +21,10 @@ const LayoutComum = ({ children }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0', // Cor de fundo do seu app
+    backgroundColor: '#f0f0f0',
   },
   content: {
-    flex: 1, // O conteúdo da tela ocupará o restante do espaço
+    flex: 1,
   },
 });
 
