@@ -6,7 +6,8 @@ import MovieDetailsScreen from './src/screens/MovieDetailsScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
-import SettingsScreen from './src/screens/SettingsScreen'; // Importe a tela de configurações
+import SettingsScreen from './src/screens/SettingsScreen';
+import ContentScreen from './src/screens/ContentScreen'; // Importando a tela que vai exibir filmes e séries
 import { UserProvider } from './src/contexts/UserContext';
 
 const Stack = createStackNavigator();
@@ -44,6 +45,11 @@ export default function App() {
           <Stack.Screen 
             name="Settings" 
             component={SettingsScreen} 
+          />
+          {/* Tela que exibe filmes ou séries com base no filtro */}
+          <Stack.Screen 
+            name="Content" 
+            component={ContentScreen} 
           />
         </Stack.Navigator>
       </NavigationContainer>

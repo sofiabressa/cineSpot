@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';  // Importando o Drawer
 import { NavigationContainer } from '@react-navigation/native';
 
 // Importando as telas
@@ -7,14 +7,16 @@ import HomeScreen from '../screens/HomeScreen';
 import MovieDetailsScreen from '../screens/MovieDetailsScreen';
 import SearchScreen from '../screens/SearchScreen';
 import LoginScreen from '../screens/LoginScreen';
+import ContentScreen from '../screens/ContentScreen';  // Importando ContentScreen
 
 // Importando o LayoutComum
 import LayoutComum from '../components/LayoutComum';
 
 // Importando o UserContext
 import { UserContext } from '../contexts/UserContext';
+import { Ionicons } from '@expo/vector-icons';  // Importando os ícones
 
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();  // Definindo o Drawer Navigator
 
 // Componente para envolver telas com LayoutComum
 const ScreenWithLayout = (Component) => (props) => (
@@ -32,29 +34,36 @@ const AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName={user ? "Home" : "Login"} // Define a tela inicial com base no estado de autenticação
+      <Drawer.Navigator
+        initialRouteName={user ? "Home" : "Login"}
         screenOptions={{
           headerShown: false, // Oculta o cabeçalho padrão do React Navigation
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="menu" color={color} size={size} />  // Ícone do menu hambúrguer
+          ),
         }}
       >
-        <Stack.Screen 
+        <Drawer.Screen 
           name="Home" 
-          component={ScreenWithLayout(HomeScreen)} // Envolve HomeScreen com LayoutComum
+          component={ScreenWithLayout(HomeScreen)} 
         />
-        <Stack.Screen 
+        <Drawer.Screen 
           name="MovieDetails" 
-          component={ScreenWithLayout(MovieDetailsScreen)} // Envolve MovieDetailsScreen com LayoutComum
+          component={ScreenWithLayout(MovieDetailsScreen)} 
         />
-        <Stack.Screen 
+        <Drawer.Screen 
           name="Search" 
-          component={ScreenWithLayout(SearchScreen)} // Envolve SearchScreen com LayoutComum
+          component={ScreenWithLayout(SearchScreen)} 
         />
-        <Stack.Screen 
+        <Drawer.Screen 
           name="Login" 
-          component={ScreenWithLayout(LoginScreen)} // Envolve LoginScreen com LayoutComum
+          component={ScreenWithLayout(LoginScreen)} 
         />
-      </Stack.Navigator>
+        <Drawer.Screen 
+          name="Content" 
+          component={ScreenWithLayout(ContentScreen)} 
+        />
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 };
