@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, Text, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
+import { FlatList, Text, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
 import { getPopularMovies } from '../services/movieService';
 import MovieCard from '../components/MovieCard';
 import LayoutComum from '../components/LayoutComum';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = ({ navigation }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
+  // Calcula o número de colunas com base na largura da tela
   const { width } = Dimensions.get('window');
-  const numColumns = width > 768 ? 4 : width > 500 ? 3 : 2;
+  const cardWidth = 160; // Largura do MovieCard
+  const margin = 8; // Margem entre os itens
+  const numColumns = Math.floor(width / (cardWidth + margin * 2)); // Considera a margem
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -33,18 +37,19 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <LayoutComum>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text style={styles.title}>Filmes Populares</Text>
         <FlatList
           data={movies}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderMovie}
-          numColumns={numColumns}
-          contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 10 }}
+          numColumns={numColumns} // Número de colunas dinâmico
+          contentContainerStyle={styles.listContent}
+          columnWrapperStyle={styles.columnWrapper} // Estilo para as colunas
         />
-      </View>
+      </SafeAreaView>
     </LayoutComum>
-  );  
+  );
 };
 
 const styles = StyleSheet.create({
@@ -66,7 +71,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#f4f4f4',
   },
   listContent: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 8, // Espaçamento horizontal para evitar cortes
+  },
+  columnWrapper: {
+    justifyContent: 'space-between', // Distribui o espaço entre os itens
   },
 });
 

@@ -9,6 +9,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import ContentScreen from './src/screens/ContentScreen'; // Importando a tela que vai exibir filmes e séries
 import SeriesDetailsScreen from './src/screens/SeriesDetailsScreen';
+import WatchListScreen from './src/screens/WatchListScreen';
 import { UserProvider } from './src/contexts/UserContext';
 
 const Stack = createStackNavigator();
@@ -31,6 +32,7 @@ export default function App() {
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="Content" component={ContentScreen} />
           <Stack.Screen name="SeriesDetails" component={SeriesDetailsScreen} />
+          <Stack.Screen name="WatchList" component={WatchListScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

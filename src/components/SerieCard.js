@@ -2,19 +2,19 @@ import React from 'react';
 import { Text, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const MovieCard = ({ movie, onPress }) => {
+const SerieCard = ({ serie, onPress }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <Image
         style={styles.poster}
-        source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }}
+        source={{ uri: `https://image.tmdb.org/t/p/w500${serie.poster_path}` }}
       />
       
-      {/* Contêiner da nota do filme */}
-      {movie.vote_average !== undefined && movie.vote_average !== null ? (
+      {/* Contêiner da nota da série */}
+      {serie.vote_average !== undefined && serie.vote_average !== null ? (
         <View style={styles.ratingContainer}>
           <Icon name="star" size={18} color="#FFD700" />
-          <Text style={styles.ratingText}>{movie.vote_average.toFixed(1)}</Text>
+          <Text style={styles.ratingText}>{serie.vote_average.toFixed(1)}</Text>
         </View>
       ) : (
         <View style={styles.ratingContainer}>
@@ -23,9 +23,9 @@ const MovieCard = ({ movie, onPress }) => {
         </View>
       )}
       
-      {/* Contêiner do título do filme */}
+      {/* Contêiner do título da série */}
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>{movie.title || 'Título Desconhecido'}</Text>
+        <Text style={styles.title}>{serie.name || 'Título Desconhecido'}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -86,4 +86,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MovieCard;
+export default SerieCard;

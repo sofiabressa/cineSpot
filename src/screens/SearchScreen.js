@@ -10,7 +10,9 @@ const SearchScreen = ({ route, navigation }) => {
   const { searchQuery } = route.params; // Recebe o termo de pesquisa da navegação
 
   const { width } = Dimensions.get('window');
-  const numColumns = width > 768 ? 4 : width > 500 ? 3 : 2;
+  const cardWidth = 160; // Largura do MovieCard
+  const margin = 8; // Margem entre os itens
+  const numColumns = Math.floor(width / (cardWidth + margin * 2)); // Número de colunas dinâmico
 
   useEffect(() => {
     const fetchSearchResults = async () => {
@@ -40,8 +42,9 @@ const SearchScreen = ({ route, navigation }) => {
           data={movies}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderMovie}
-          numColumns={numColumns}
-          contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 10 }}
+          numColumns={numColumns} // Número de colunas dinâmico
+          contentContainerStyle={styles.listContent}
+          columnWrapperStyle={styles.columnWrapper} // Estilo para as colunas
           ListEmptyComponent={
             <Text style={styles.noResults}>Nenhum filme encontrado.</Text>
           }
@@ -74,6 +77,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 20,
     color: '#666',
+  },
+  listContent: {
+    paddingHorizontal: 8, // Espaçamento horizontal para evitar cortes
+  },
+  columnWrapper: {
+    justifyContent: 'space-between', // Distribui o espaço entre os itens
   },
 });
 

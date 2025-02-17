@@ -31,7 +31,7 @@ const MovieDetailsScreen = ({ route }) => {
         setCertifications(certificationsData);
 
         // Verifica se o filme está nos favoritos
-        const favoriteStatus = await checkIfFavorite(movieId);
+        const favoriteStatus = await checkIfFavorite(movieId, 'movie'); // Passa o media_type como 'movie'
         setIsFavorite(favoriteStatus);
       } catch (error) {
         console.error(error);
@@ -44,9 +44,9 @@ const MovieDetailsScreen = ({ route }) => {
   const toggleFavorite = async () => {
     try {
       if (isFavorite) {
-        await removeFromFavorites(movieId);
+        await removeFromFavorites(movieId, 'movie'); // Passa o media_type como 'movie'
       } else {
-        await addToFavorites(movieId);
+        await addToFavorites(movieId, 'movie'); // Passa o media_type como 'movie'
       }
       setIsFavorite(!isFavorite);
     } catch (error) {

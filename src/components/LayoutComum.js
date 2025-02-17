@@ -9,11 +9,11 @@ const LayoutComum = ({ children }) => {
   return (
     <View style={styles.container}>
       <Header
-        onMenuPress={() => console.log('Menu pressionado')}
-        onSearchPress={() => console.log('Pesquisa pressionada')}
         onLoginPress={() => navigation.navigate('Login')}
       />
-      <View style={styles.content}>{children}</View>
+      <View style={styles.content}>
+        {children}
+      </View>
     </View>
   );
 };
@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    width: '100%',
   },
 });
 

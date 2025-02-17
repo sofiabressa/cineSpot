@@ -9,6 +9,7 @@ import SearchScreen from '../screens/SearchScreen';
 import LoginScreen from '../screens/LoginScreen';
 import ContentScreen from '../screens/ContentScreen';
 import SeriesDetailsScreen from '../screens/SeriesDetailsScreen';
+import WatchListScreen from '../screens/WatchListScreen';
 
 // Importando o LayoutComum
 import LayoutComum from '../components/LayoutComum';
@@ -70,6 +71,11 @@ const AppNavigator = () => {
         <Stack.Screen 
           name="Content" 
           component={ScreenWithLayout(ContentScreen)} 
+        />
+        {/* Tela de filmes favoritados */}
+        <Stack.Screen 
+          name="WatchList" 
+          component={ScreenWithLayout(WatchListScreen)} 
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -6,9 +6,9 @@ import { UserContext } from '../contexts/UserContext';
 
 const Header = () => {
   const navigation = useNavigation();
-  const { user } = useContext(UserContext); // Acesse o estado do usuário
-  const [searchQuery, setSearchQuery] = useState(''); // Estado para armazenar o texto da pesquisa
-  const searchInputRef = useRef(null); // Referência para o TextInput
+  const { user } = useContext(UserContext);
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchInputRef = useRef(null);
 
   const handleLogoPress = () => {
     navigation.navigate('Home');
@@ -16,28 +16,30 @@ const Header = () => {
 
   const handleProfilePress = () => {
     if (user) {
-      // Redireciona para a tela de perfil
       navigation.navigate('Profile');
     } else {
-      // Redireciona para a tela de login
       navigation.navigate('Login');
     }
   };
 
   const handleSearch = () => {
-    if (searchQuery.trim()) { // Verifica se o campo de pesquisa não está vazio
-      navigation.navigate('Search', { searchQuery }); // Navega para a SearchScreen com o termo de pesquisa
+    if (searchQuery.trim()) {
+      navigation.navigate('Search', { searchQuery });
     }
   };
 
   const handleSearchPress = () => {
-    searchInputRef.current.focus(); // Foca no TextInput ao clicar no ícone de pesquisa
+    searchInputRef.current.focus();
   };
 
   const handleNavigation = (contentType) => {
-    navigation.navigate('Content', { contentType }); // Navega para a tela ContentScreen com o tipo de conteúdo (filmes ou séries)
+    if (contentType === 'watchlist') {
+      navigation.navigate('WatchList'); // Navega para a tela da WatchList
+    } else {
+      navigation.navigate('Content', { contentType }); // Navega para Filmes ou Séries
+    }
   };
-
+  
   return (
     <View style={styles.headerContainer}>
       {/* Nome CineSpot, Sessões e Barra de Pesquisa (lado esquerdo) */}
@@ -59,13 +61,13 @@ const Header = () => {
         {/* Barra de pesquisa */}
         <View style={styles.searchContainer}>
           <TextInput
-            ref={searchInputRef} // Referência para o TextInput
+            ref={searchInputRef}
             style={styles.searchInput}
             placeholder="Pesquisar..."
             placeholderTextColor="#999"
             value={searchQuery}
-            onChangeText={setSearchQuery} // Atualiza o estado com o texto digitado
-            onSubmitEditing={handleSearch} // Executa a pesquisa ao pressionar "Enter"
+            onChangeText={setSearchQuery}
+            onSubmitEditing={handleSearch}
           />
           <TouchableOpacity onPress={handleSearchPress}>
             <Ionicons name="search" size={18} color="white" style={styles.searchIcon} />
@@ -101,11 +103,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     elevation: 5,
+    height: 60, // Altura fixa para o Header
   },
   leftContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1, // Ocupa todo o espaço disponível à esquerda
+    flex: 1,
   },
   sessionText: {
     color: 'white',
@@ -117,7 +120,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     letterSpacing: 1.2,
-    marginRight: 20, // Espaço maior entre o nome CineSpot e as sessões
+    marginRight: 20,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -125,15 +128,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#333',
     borderRadius: 15,
     paddingHorizontal: 8,
-    height: 30, // Aumentei a altura para facilitar o clique
-    flex: 0.3, // Faz a barra de pesquisa ocupar o restante do espaço disponível
-    marginLeft: 10, // Espaço maior entre a barra de pesquisa e as sessões
+    height: 30,
+    flex: 0.3,
+    marginLeft: 10,
   },
   searchInput: {
     flex: 1,
     color: 'white',
     fontSize: 14,
-    paddingVertical: 8, // Aumentei o padding para facilitar o clique
+    paddingVertical: 8,
   },
   searchIcon: {
     marginLeft: 6,

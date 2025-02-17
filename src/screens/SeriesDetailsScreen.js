@@ -31,7 +31,7 @@ const SeriesDetailsScreen = ({ route }) => {
         setCertifications(certificationsData);
 
         // Verifica se a série está nos favoritos
-        const favoriteStatus = await checkIfFavorite(tvId);
+        const favoriteStatus = await checkIfFavorite(tvId, 'tv'); // Passa o media_type como 'tv'
         setIsFavorite(favoriteStatus);
       } catch (error) {
         console.error(error);
@@ -44,9 +44,9 @@ const SeriesDetailsScreen = ({ route }) => {
   const toggleFavorite = async () => {
     try {
       if (isFavorite) {
-        await removeFromFavorites(tvId);
+        await removeFromFavorites(tvId, 'tv'); // Passa o media_type como 'tv'
       } else {
-        await addToFavorites(tvId);
+        await addToFavorites(tvId, 'tv'); // Passa o media_type como 'tv'
       }
       setIsFavorite(!isFavorite);
     } catch (error) {
