@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
-import { FcGoogle } from "react-icons/fc"; // Ícone do Google
-import { FiLogOut } from "react-icons/fi"; // Ícone de logout
+import { FcGoogle } from "react-icons/fc"; 
+import { FiLogOut } from "react-icons/fi"; 
 
 const AuthStatus = () => {
-  const { user, logout } = useContext(UserContext);
+  const { user, logout, googleLogin } = useContext(UserContext); // Pegando googleLogin do contexto
 
   if (user) {
     return (
@@ -18,7 +18,7 @@ const AuthStatus = () => {
   }
 
   return (
-    <button onClick={loginWithGoogle} style={{ background: "none", border: "none", cursor: "pointer" }}>
+    <button onClick={googleLogin} style={{ background: "none", border: "none", cursor: "pointer" }}>
       <FcGoogle size={20} />
     </button>
   );
