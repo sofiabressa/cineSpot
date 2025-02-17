@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { createDrawerNavigator } from '@react-navigation/drawer';  // Importando o Drawer
+import { createStackNavigator } from '@react-navigation/stack';  // Importando o Stack
 import { NavigationContainer } from '@react-navigation/native';
 
 // Importando as telas
@@ -7,7 +7,8 @@ import HomeScreen from '../screens/HomeScreen';
 import MovieDetailsScreen from '../screens/MovieDetailsScreen';
 import SearchScreen from '../screens/SearchScreen';
 import LoginScreen from '../screens/LoginScreen';
-import ContentScreen from '../screens/ContentScreen';  // Importando ContentScreen
+import ContentScreen from '../screens/ContentScreen';
+import SeriesDetailsScreen from '../screens/SeriesDetailsScreen';
 
 // Importando o LayoutComum
 import LayoutComum from '../components/LayoutComum';
@@ -16,7 +17,7 @@ import LayoutComum from '../components/LayoutComum';
 import { UserContext } from '../contexts/UserContext';
 import { Ionicons } from '@expo/vector-icons';  // Importando os ícones
 
-const Drawer = createDrawerNavigator();  // Definindo o Drawer Navigator
+const Stack = createStackNavigator();  // Definindo o Stack Navigator
 
 // Componente para envolver telas com LayoutComum
 const ScreenWithLayout = (Component) => (props) => (
@@ -34,36 +35,43 @@ const AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      <Drawer.Navigator
-        initialRouteName={user ? "Home" : "Login"}
+      <Stack.Navigator
+        initialRouteName={user ? "Home" : "Login"}  // A tela inicial depende do usuário
         screenOptions={{
           headerShown: false, // Oculta o cabeçalho padrão do React Navigation
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="menu" color={color} size={size} />  // Ícone do menu hambúrguer
-          ),
         }}
       >
-        <Drawer.Screen 
+        {/* Tela inicial */}
+        <Stack.Screen 
           name="Home" 
           component={ScreenWithLayout(HomeScreen)} 
         />
-        <Drawer.Screen 
+        {/* Tela de detalhes do filme */}
+        <Stack.Screen 
           name="MovieDetails" 
           component={ScreenWithLayout(MovieDetailsScreen)} 
         />
-        <Drawer.Screen 
+        {/* Tela de detalhes da série */}
+        <Stack.Screen 
+          name="SeriesDetails" 
+          component={ScreenWithLayout(SeriesDetailsScreen)} 
+        />
+        {/* Tela de busca */}
+        <Stack.Screen 
           name="Search" 
           component={ScreenWithLayout(SearchScreen)} 
         />
-        <Drawer.Screen 
+        {/* Tela de login */}
+        <Stack.Screen 
           name="Login" 
           component={ScreenWithLayout(LoginScreen)} 
         />
-        <Drawer.Screen 
+        {/* Tela de conteúdo (filmes ou séries) */}
+        <Stack.Screen 
           name="Content" 
           component={ScreenWithLayout(ContentScreen)} 
         />
-      </Drawer.Navigator>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

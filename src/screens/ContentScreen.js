@@ -1,49 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, Text, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
-import { fetchMovies, fetchSeries } from '../services/movieService'; // Importe as funções de busca
+import { getPopularMovies, getPopularTVShows } from '../services/movieService'; // Ajustando para pegar filmes e séries
 import MovieCard from '../components/MovieCard';
 import LayoutComum from '../components/LayoutComum';
 
 const ContentScreen = ({ route, navigation }) => {
-    const [content, setContent] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const { contentType } = route.params;
+  const [content, setContent] = useState([]);
+  const [loading, setLoading] = useState(true);
   
-    useEffect(() => {
-      const fetchData = async () => {
-        let data;
+  const { contentType } = route.params; // 'movies' ou 'series'
+  const { width } = Dimensions.get('window');
+  const numColumns = width > 768 ? 4 : width > 500 ? 3 : 2; // Número de colunas baseado na largura da tela
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let data;
+      if (contentType === 'movies') {
+        data = await getPopularMovies();
+      } else if (contentType === 'series') {
+        data = await getPopularTVShows();
+      }
+      setContent(data);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [contentType]);
+
+  const renderItem = ({ item }) => (
+    <MovieCard
+      movie={item}
+      onPress={() => {
+        // Verifica o tipo de conteúdo e navega para a tela correta
         if (contentType === 'movies') {
-          data = await fetchMovies();
+          navigation.navigate('MovieDetails', { movieId: item.id });
         } else if (contentType === 'series') {
-          data = await fetchSeries();
+          navigation.navigate('SeriesDetails', { tvId: item.id });
         }
-        setContent(data);
-        setLoading(false);
-      };
-      fetchData();
-    }, [contentType]);
-  
-    const renderItem = ({ item }) => (
-      <MovieCard
-        movie={item}
-        onPress={() => navigation.navigate('Details', { id: item.id, type: contentType })}
-      />
-    );
-  
-    if (loading) {
-      return <ActivityIndicator size="large" color="#0000ff" />;
-    }
-  
-    return (
-      <LayoutComum>
+      }}
+    />
+  );
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />;
+  }
+
+  return (
+    <LayoutComum>
+      <View style={styles.container}>
+        <Text style={styles.title}>{contentType === 'movies' ? 'Filmes Populares' : 'Séries Populares'}</Text>
         <FlatList
           data={content}
-          renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          numColumns={numColumns}
+          contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 10 }}
         />
-      </LayoutComum>
-    );
-  };  
+      </View>
+    </LayoutComum>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -62,12 +78,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f4f4f4',
-  },
-  noResults: {
-    textAlign: 'center',
-    fontSize: 16,
-    marginTop: 20,
-    color: '#666',
   },
 });
 

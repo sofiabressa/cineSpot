@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from '../contexts/UserContext';
 
-const Header = ({ onMenuPress }) => {
+const Header = () => {
   const navigation = useNavigation();
   const { user } = useContext(UserContext); // Acesse o estado do usuário
   const [searchQuery, setSearchQuery] = useState(''); // Estado para armazenar o texto da pesquisa
@@ -34,14 +34,28 @@ const Header = ({ onMenuPress }) => {
     searchInputRef.current.focus(); // Foca no TextInput ao clicar no ícone de pesquisa
   };
 
+  const handleNavigation = (contentType) => {
+    navigation.navigate('Content', { contentType }); // Navega para a tela ContentScreen com o tipo de conteúdo (filmes ou séries)
+  };
+
   return (
     <View style={styles.headerContainer}>
-      {/* Ícone de menu e barra de pesquisa (lado esquerdo) */}
+      {/* Nome CineSpot, Sessões e Barra de Pesquisa (lado esquerdo) */}
       <View style={styles.leftContainer}>
-        <TouchableOpacity onPress={onMenuPress}>
-          <Ionicons name="menu" size={24} color="white" style={styles.icon} />
+        <TouchableOpacity onPress={handleLogoPress}>
+          <Text style={styles.title}>CineSpot</Text>
         </TouchableOpacity>
-
+        <TouchableOpacity onPress={() => handleNavigation('movies')}>
+          <Text style={styles.sessionText}>Filmes</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigation('series')}>
+          <Text style={styles.sessionText}>Séries</Text>
+        </TouchableOpacity>
+        {user && (
+          <TouchableOpacity onPress={() => handleNavigation('watchlist')}>
+            <Text style={styles.sessionText}>WatchList</Text>
+          </TouchableOpacity>
+        )}
         {/* Barra de pesquisa */}
         <View style={styles.searchContainer}>
           <TextInput
@@ -59,14 +73,7 @@ const Header = ({ onMenuPress }) => {
         </View>
       </View>
 
-      {/* Nome CineSpot (centralizado) */}
-      <View style={styles.centerContainer}>
-        <TouchableOpacity onPress={handleLogoPress}>
-          <Text style={styles.title}>CineSpot</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Ícones de perfil (alinhados à direita) */}
+      {/* Ícones de perfil e login (lado direito) */}
       <View style={styles.rightContainer}>
         {user ? (
           <View style={styles.userContainer}>
@@ -98,17 +105,29 @@ const styles = StyleSheet.create({
   leftContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1, // Ocupa o espaço disponível à esquerda
+    flex: 1, // Ocupa todo o espaço disponível à esquerda
+  },
+  sessionText: {
+    color: 'white',
+    fontSize: 16,
+    marginHorizontal: 12,
+  },
+  title: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    letterSpacing: 1.2,
+    marginRight: 20, // Espaço maior entre o nome CineSpot e as sessões
   },
   searchContainer: {
-    flex: 0.3, // Aumentei a largura da barra de pesquisa
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#333',
     borderRadius: 15,
-    marginLeft: 10,
     paddingHorizontal: 8,
-    height: 40, // Aumentei a altura para facilitar o clique
+    height: 30, // Aumentei a altura para facilitar o clique
+    flex: 0.3, // Faz a barra de pesquisa ocupar o restante do espaço disponível
+    marginLeft: 10, // Espaço maior entre a barra de pesquisa e as sessões
   },
   searchInput: {
     flex: 1,
@@ -118,26 +137,6 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     marginLeft: 6,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#111',
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    elevation: 5,
-  },
-  centerContainer: {
-    position: 'absolute',
-    left: '50%',
-    transform: [{ translateX: -40 }], // Ajuste fino para centralizar o título
-  },
-  title: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-    letterSpacing: 1.2,
   },
   rightContainer: {
     flexDirection: 'row',
