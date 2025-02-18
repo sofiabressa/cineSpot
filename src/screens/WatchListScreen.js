@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, FlatList, Text, StyleSheet, Dimensions } from 'react-native';
 import MovieCard from '../components/MovieCard';
-import SerieCard from '../components/SerieCard';  // Importando o SerieCard
+import SerieCard from '../components/SerieCard';
 import LayoutComum from '../components/LayoutComum';
 import { UserContext } from '../contexts/UserContext';
 import { getUserFavorites } from '../services/favoriteService';
@@ -9,8 +9,8 @@ import { getUserFavorites } from '../services/favoriteService';
 const WatchListScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
   const { width } = Dimensions.get('window');
-  const cardWidth = 160;  // Largura do card
-  const margin = 10;  // Aumento do espaçamento entre os cards
+  const cardWidth = 160;
+  const margin = 10;
   const [watchList, setWatchList] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,8 +23,8 @@ const WatchListScreen = ({ navigation }) => {
       }
 
       try {
-        const favorites = await getUserFavorites(); // Busca os favoritos do usuário
-        setWatchList(favorites); // Atualiza a lista de favoritos
+        const favorites = await getUserFavorites();
+        setWatchList(favorites);
       } catch (error) {
         console.error('Erro ao buscar favoritos:', error);
       }
@@ -45,36 +45,26 @@ const WatchListScreen = ({ navigation }) => {
   }
 
   const renderItem = ({ item }) => {
-    if (!item || !item.id || !(item.title || item.name)) { 
+    if (!item || !item.id || !(item.title || item.name)) {
       console.error('Item inválido encontrado:', item);
       return null;
     }
 
-    if (item.media_type === 'movie') {
-      return (
-        <MovieCard
-          movie={item}
-          onPress={() => {
-            navigation.navigate('MovieDetails', { movieId: item.id });
-          }}
-        />
-      );
-    } else if (item.media_type === 'tv') {
-      return (
-        <SerieCard
-          serie={item}
-          onPress={() => {
-            navigation.navigate('SeriesDetails', { tvId: item.id });
-          }}
-        />
-      );
-    }
-
-    return null;
+    return item.media_type === 'movie' ? (
+      <MovieCard
+        movie={item}
+        onPress={() => navigation.navigate('MovieDetails', { movieId: item.id })}
+      />
+    ) : (
+      <SerieCard
+        serie={item}
+        onPress={() => navigation.navigate('SeriesDetails', { tvId: item.id })}
+      />
+    );
   };
 
-  // Ajuste para `numColumns` dinâmico
-  const numColumns = watchList.length > 1 ? Math.floor(width / (cardWidth + margin)) : watchList.length;
+  // Calcular dinamicamente o número de colunas
+  const numColumns = Math.max(2, Math.floor(width / (cardWidth + margin)));
 
   return (
     <LayoutComum>
@@ -89,7 +79,7 @@ const WatchListScreen = ({ navigation }) => {
             renderItem={renderItem}
             numColumns={numColumns}
             contentContainerStyle={styles.listContent}
-            columnWrapperStyle={styles.columnWrapper}
+            columnWrapperStyle={watchList.length < numColumns ? styles.centeredColumn : styles.columnWrapper}
           />
         ) : (
           <Text style={styles.noResults}>Nenhum filme ou série na WatchList.</Text>
@@ -125,11 +115,14 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingHorizontal: 8,
+    paddingBottom: 20,
   },
   columnWrapper: {
-    justifyContent: 'center',  // Centraliza os itens
-    alignItems: 'center',      // Garante que os itens fiquem alinhados no centro
+    justifyContent: 'space-between',
   },
+  centeredColumn: {
+    justifyContent: 'center',
+  },  
 });
 
 export default WatchListScreen;
