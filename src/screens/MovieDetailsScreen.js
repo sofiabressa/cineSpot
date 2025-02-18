@@ -20,18 +20,18 @@ const MovieDetailsScreen = ({ route }) => {
       try {
         const movieData = await getMovieDetails(movieId);
         setMovie(movieData);
-
+  
         const creditsData = await getMovieCast(movieId);
-        setCast(creditsData.cast);
-
+        console.log('Elenco do filme:', creditsData); // Verifique o que está sendo retornado
+        setCast(creditsData);
+  
         const streamingData = await getMovieStreaming(movieId);
         setStreamingPlatforms(streamingData);
-
+  
         const certificationsData = await getMovieCertifications(movieId);
         setCertifications(certificationsData);
-
-        // Verifica se o filme está nos favoritos
-        const favoriteStatus = await checkIfFavorite(movieId, 'movie'); // Passa o media_type como 'movie'
+  
+        const favoriteStatus = await checkIfFavorite(movieId, 'movie');
         setIsFavorite(favoriteStatus);
       } catch (error) {
         console.error(error);
@@ -72,6 +72,25 @@ const MovieDetailsScreen = ({ route }) => {
               <Text style={styles.infoText}>{movie.genres.map(genre => genre.name).join(', ')}</Text>
               <Text style={styles.infoText}>Duração: {Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m</Text>
               <Text style={styles.rating}>⭐ {movie.vote_average.toFixed(1)}</Text>
+
+              {/* Streaming abaixo da nota */}
+              <View style={styles.streamingContainer}>
+                <Text style={styles.streamingTitle}>Disponível em:</Text>
+                <View style={styles.streamingPlatformsContainer}>
+                  {streamingPlatforms.length > 0 ? (
+                    streamingPlatforms.map((platform) => (
+                      <View key={platform.provider_id} style={styles.streamingItem}>
+                        <Image
+                          style={styles.streamingIcon}
+                          source={{ uri: `https://image.tmdb.org/t/p/w500${platform.logo_path}` }}
+                        />
+                      </View>
+                    ))
+                  ) : (
+                    <Text style={styles.noStreaming}>Não disponível em plataformas de streaming.</Text>
+                  )}
+                </View>
+              </View>
             </View>
             <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteButton}>
               <Heart size={32} color={isFavorite ? 'red' : 'white'} fill={isFavorite ? 'red' : 'none'} />
@@ -79,11 +98,13 @@ const MovieDetailsScreen = ({ route }) => {
           </View>
         </ImageBackground>
 
+        {/* Sinopse */}
         <View style={styles.detailsContainer}>
           <Text style={styles.sectionTitle}>Sinopse</Text>
           <Text style={styles.overview}>{movie.overview}</Text>
         </View>
 
+        {/* Elenco */}
         <View style={styles.detailsContainer}>
           <Text style={styles.sectionTitle}>Elenco</Text>
           <FlatList
@@ -115,11 +136,23 @@ const styles = StyleSheet.create({
   rating: { fontSize: 18, color: '#ffcc00', marginTop: 10 },
   detailsContainer: { padding: 20, borderBottomWidth: 1, borderBottomColor: '#444' },
   sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#fff', marginBottom: 10 },
+  streamingTitle: { fontSize: 16, color: '#fff', marginBottom: 10 }, // Tamanho menor para "Streaming"
   overview: { fontSize: 16, color: '#ddd', lineHeight: 22 },
   castItem: { alignItems: 'center', marginRight: 15 },
   castImage: { width: 80, height: 80, borderRadius: 40 },
   castName: { fontSize: 14, color: '#fff', marginTop: 5, textAlign: 'center' },
   favoriteButton: { position: 'absolute', top: 20, right: 20 },
+  streamingContainer: { marginTop: 10 }, // Container da seção de streaming
+  streamingPlatformsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  streamingItem: { margin: 10 },
+  streamingIcon: { width: 50, height: 50, resizeMode: 'contain', marginRight: 10 },
+  noStreaming: { fontSize: 16, color: '#999', textAlign: 'left' },
 });
 
 export default MovieDetailsScreen;

@@ -32,7 +32,7 @@ export const UserProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const loggedUser = await loginWithEmail(email, password);
-      setUser(loggedUser);
+      setUser(loggedUser); // Define o usuário como logado
     } catch (error) {
       throw error;
     }
@@ -41,8 +41,9 @@ export const UserProvider = ({ children }) => {
   // Função para registro com e-mail e senha
   const register = async (email, password) => {
     try {
-      const newUser = await registerWithEmail(email, password);
-      setUser(newUser);
+      await registerWithEmail(email, password); // Registra o usuário
+      await signOut(auth); // Desconecta o usuário após o registro
+      // Não chama setUser aqui, para evitar login automático
     } catch (error) {
       throw error;
     }
@@ -52,7 +53,7 @@ export const UserProvider = ({ children }) => {
   const googleLogin = async () => {
     try {
       const loggedUser = await loginWithGoogle();
-      setUser(loggedUser);
+      setUser(loggedUser); // Define o usuário como logado
     } catch (error) {
       throw error;
     }
@@ -62,7 +63,7 @@ export const UserProvider = ({ children }) => {
   const logout = async () => {
     try {
       await signOut(auth);
-      setUser(null);
+      setUser(null); // Limpa o estado do usuário
     } catch (error) {
       throw error;
     }

@@ -22,7 +22,8 @@ const SeriesDetailsScreen = ({ route }) => {
         setTVShow(tvShowData);
 
         const creditsData = await getTVShowCast(tvId);
-        setCast(creditsData.cast);
+        console.log('Elenco:', creditsData); // Verifique o que está sendo retornado
+        setCast(creditsData);
 
         const streamingData = await getTVShowStreaming(tvId);
         setStreamingPlatforms(streamingData);
@@ -30,8 +31,7 @@ const SeriesDetailsScreen = ({ route }) => {
         const certificationsData = await getTVShowCertifications(tvId);
         setCertifications(certificationsData);
 
-        // Verifica se a série está nos favoritos
-        const favoriteStatus = await checkIfFavorite(tvId, 'tv'); // Passa o media_type como 'tv'
+        const favoriteStatus = await checkIfFavorite(tvId, 'tv');
         setIsFavorite(favoriteStatus);
       } catch (error) {
         console.error(error);
@@ -44,9 +44,9 @@ const SeriesDetailsScreen = ({ route }) => {
   const toggleFavorite = async () => {
     try {
       if (isFavorite) {
-        await removeFromFavorites(tvId, 'tv'); // Passa o media_type como 'tv'
+        await removeFromFavorites(tvId, 'tv');
       } else {
-        await addToFavorites(tvId, 'tv'); // Passa o media_type como 'tv'
+        await addToFavorites(tvId, 'tv');
       }
       setIsFavorite(!isFavorite);
     } catch (error) {
@@ -72,6 +72,25 @@ const SeriesDetailsScreen = ({ route }) => {
               <Text style={styles.infoText}>{tvShow.genres.map(genre => genre.name).join(', ')}</Text>
               <Text style={styles.infoText}>Episódios: {tvShow.number_of_episodes}</Text>
               <Text style={styles.rating}>⭐ {tvShow.vote_average.toFixed(1)}</Text>
+
+              {/* Streaming abaixo da nota */}
+              <View style={styles.streamingContainer}>
+                <Text style={styles.streamingTitle}>Streaming</Text>
+                <View style={styles.streamingPlatformsContainer}>
+                  {streamingPlatforms.length > 0 ? (
+                    streamingPlatforms.map((platform) => (
+                      <View key={platform.provider_id} style={styles.streamingItem}>
+                        <Image
+                          style={styles.streamingIcon}
+                          source={{ uri: `https://image.tmdb.org/t/p/w500${platform.logo_path}` }}
+                        />
+                      </View>
+                    ))
+                  ) : (
+                    <Text style={styles.noStreaming}>Não disponível em plataformas de streaming.</Text>
+                  )}
+                </View>
+              </View>
             </View>
             <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteButton}>
               <Heart size={32} color={isFavorite ? 'red' : 'white'} fill={isFavorite ? 'red' : 'none'} />
@@ -79,11 +98,13 @@ const SeriesDetailsScreen = ({ route }) => {
           </View>
         </ImageBackground>
 
+        {/* Sinopse */}
         <View style={styles.detailsContainer}>
           <Text style={styles.sectionTitle}>Sinopse</Text>
           <Text style={styles.overview}>{tvShow.overview}</Text>
         </View>
 
+        {/* Elenco */}
         <View style={styles.detailsContainer}>
           <Text style={styles.sectionTitle}>Elenco</Text>
           <FlatList
@@ -92,7 +113,14 @@ const SeriesDetailsScreen = ({ route }) => {
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <View style={styles.castItem}>
-                <Image style={styles.castImage} source={{ uri: `https://image.tmdb.org/t/p/w500${item.profile_path}` }} />
+                <Image
+                  style={styles.castImage}
+                  source={{
+                    uri: item.profile_path
+                      ? `https://image.tmdb.org/t/p/w500${item.profile_path}`
+                      : 'https://via.placeholder.com/500x750?text=Sem+Imagem',
+                  }}
+                />
                 <Text style={styles.castName}>{item.name}</Text>
               </View>
             )}
@@ -115,11 +143,23 @@ const styles = StyleSheet.create({
   rating: { fontSize: 18, color: '#ffcc00', marginTop: 10 },
   detailsContainer: { padding: 20, borderBottomWidth: 1, borderBottomColor: '#444' },
   sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#fff', marginBottom: 10 },
+  streamingTitle: { fontSize: 16, color: '#fff', marginBottom: 10 },
   overview: { fontSize: 16, color: '#ddd', lineHeight: 22 },
   castItem: { alignItems: 'center', marginRight: 15 },
   castImage: { width: 80, height: 80, borderRadius: 40 },
   castName: { fontSize: 14, color: '#fff', marginTop: 5, textAlign: 'center' },
   favoriteButton: { position: 'absolute', top: 20, right: 20 },
+  streamingContainer: { marginTop: 10 },
+  streamingPlatformsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  streamingItem: { margin: 10 },
+  streamingIcon: { width: 50, height: 50, resizeMode: 'contain', marginRight: 10 },
+  noStreaming: { fontSize: 16, color: '#999', textAlign: 'left' },
 });
 
 export default SeriesDetailsScreen;
